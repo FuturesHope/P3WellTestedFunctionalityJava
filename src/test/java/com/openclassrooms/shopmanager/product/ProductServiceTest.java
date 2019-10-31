@@ -34,17 +34,17 @@ public class ProductServiceTest {
     @Test
     public void getAllProducts_DbHasData_allDataReturned(){
 
-        ProductEntity product1 = new ProductEntity();
+        Product product1 = new Product();
         product1.setId(1L);
         product1.setName("First product");
 
-        ProductEntity product2 = new ProductEntity();
+        Product product2 = new Product();
         product2.setId(2L);
         product2.setName("First product");
 
         when(productRepository.findAll()).thenReturn(Arrays.asList(product1, product2));
 
-        List<ProductEntity> products = productService.getAllProducts();
+        List<Product> products = productService.getAllProducts();
 
         assertEquals(2, products.size());
         assertEquals(1L, products.get(0).getId() , 0);
@@ -53,16 +53,16 @@ public class ProductServiceTest {
 
     @Test
     public void getAllAdminProduct() {
-        ProductEntity product3 = new ProductEntity();
+        Product product3 = new Product();
         product3.setId(3L);
         product3.setName("Third product");
 
-        ProductEntity product4 = new ProductEntity();
+        Product product4 = new Product();
         product4.setId(4L);
         product4.setName("Fourth product");
 
         when(productRepository.findAllByOrderByIdDesc()).thenReturn(Arrays.asList(product3, product4));
-        List<ProductEntity> products2 = productService.getAllAdminProducts();
+        List<Product> products2 = productService.getAllAdminProducts();
 
         assertEquals(2, products2.size());
         assertEquals(3L, products2.get(0).getId(), 0);
@@ -71,13 +71,13 @@ public class ProductServiceTest {
 
     @Test
     public void getByProductId() {
-        ProductEntity product1 = new ProductEntity();
+        Product product1 = new Product();
         product1.setId(1L);
         product1.setPrice(10.05);
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product1));
 
-        ProductEntity productReturn = productService.getByProductId(1L);
+        Product productReturn = productService.getByProductId(1L);
 
         //assertEquals(product1 , productReturn);
         assertEquals(10.05, productReturn.getPrice(), 0);
@@ -95,7 +95,7 @@ public class ProductServiceTest {
 
         Product secondObject = new Product();
 
-        ProductEntity thirdObject = new ProductEntity();
+        Product thirdObject = new Product();
         thirdObject.setDescription(newObject.getDescription());
         thirdObject.setDetails(newObject.getDetails());
         thirdObject.setName(newObject.getName());
@@ -103,9 +103,9 @@ public class ProductServiceTest {
         thirdObject.setQuantity(newObject.getQuantity());
 
 
-        when(productRepository.save(thirdObject).thenReturn(thirdObject = newObject));
+        when(productRepository.save(thirdObject)).thenReturn(secondObject = newObject);
 
-        assertEquals(secondObject.getPrice(), newObject.getPrice());
+        assertEquals(secondObject.getPrice(), newObject.getPrice(), 0);
 
 
 
