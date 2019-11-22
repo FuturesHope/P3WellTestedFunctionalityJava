@@ -41,7 +41,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/product")
-    public String createProduct(@Valid @ModelAttribute("productModel") ProductModel productModel, BindingResult result)
+    public String createProduct(@Valid @ModelAttribute("product") ProductModel productModel, BindingResult result)
     {
         //TODO implement form fields validation using the standard annotations in ProductModel cloass
         // Business constraints for each field is commented against it

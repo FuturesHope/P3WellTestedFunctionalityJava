@@ -1,17 +1,22 @@
 package com.openclassrooms.shopmanager.product;
 
+import com.openclassrooms.shopmanager.order.Cart;
+import com.openclassrooms.shopmanager.order.CartLine;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.OngoingStubbing;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 /**
@@ -94,7 +99,7 @@ public class ProductServiceTest {
         newObject.setDetails("Good car");
 
         Product secondObject = new Product();
-
+        //this object would be the copy of the newObject; imittion of creating an product out of productmodel
         Product thirdObject = new Product();
         thirdObject.setDescription(newObject.getDescription());
         thirdObject.setDetails(newObject.getDetails());
@@ -106,16 +111,6 @@ public class ProductServiceTest {
         when(productRepository.save(thirdObject)).thenReturn(secondObject = newObject);
 
         assertEquals(secondObject.getPrice(), newObject.getPrice(), 0);
-
-
-
-        /*when(productRepository.save(product).thenReturn(Optional.of(product))); //addItem(ProductEntity product, int quantity)
-
-        create an object of class Product;
-
-        create another product entity class and pass product there
-                productService.createProduct(product);
-        ProductEntity createdProduct = productService.createProduct(product);*/
     }
     /*@Test
     public void deleteProduct(){
@@ -126,10 +121,41 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void updateProductQuantities(){
+    public void updateProductQuantitiesTest(){
+        final Product[] productToDelete = {new Product()};
+        productToDelete[0].setId(7L);
+        productToDelete[0].setQuantity(3);
 
-//        remove;
-    }*/
+        Cart productList = new Cart();
+        productList.addItem(productToDelete[0], 1);
+
+        doAnswer(invocation -> {
+            final Product productSaved = invocation.getArgument(0);
+            if(productSaved.getId().equals(productToDelete[0].getId())) {
+                productToDelete[0] = null;
+            }
+            return null;
+        }).when(productRepository).delete(any(Product.class));
+
+        doAnswer(invocation -> {
+            final Product productSaved = invocation.getArgument(0);
+            if(productSaved.getId().equals(productToDelete[0].getId())) {
+                productToDelete[0].setQuantity(productSaved.getQuantity());
+            }
+            return null;
+        }).when(productRepository).save(any(Product.class));
+
+        when(productRepository.findById(7L)).thenReturn(Optional.ofNullable(productToDelete[0]));
+
+        productService.updateProductQuantities(productList);
+
+        assertEquals(productToDelete[0].getQuantity(), 2);
+        Cart newCartTest = new Cart();
+        newCartTest.addItem(productToDelete[0], 2);
+        productService.updateProductQuantities(newCartTest);
+        assertNull(productToDelete[0]);
+    }
+
 
 
 }

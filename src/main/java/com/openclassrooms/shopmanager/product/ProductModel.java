@@ -12,10 +12,10 @@ public class ProductModel {
     private String name;            // Required
     private String description;
     private String details;
-    @NotNull(message = "Quantity is required")
+    @NotBlank(message = "Quantity is required")
     @Min(value=1)
     private String  quantity;       // Required, Integer, Greater than zero
-    @NotNull(message = "The price is required")
+    @NotBlank(message = "The price is required")
     @DecimalMin(value ="0.1",inclusive = true, message="The price must be a decimal value and greater than zero")
     private String  price;          // Required, Numeric, Greater than zero
 
